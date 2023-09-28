@@ -36,25 +36,30 @@ class S(BaseHTTPRequestHandler):
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
 
         json_data = json.loads(post_data)
-        keys = json_data['keys']
-        mouse = json_data['mouse']
+        keys = json_data.get('keys')
+        mouse = json_data.get('mouse')
 
         if keys is not None:
-            if len(keys) == 0:
-                print('no keys passed')
-            else:
+            if len(keys) != 0:
                 print(f'keys: {keys}')
                 pyautogui.hotkey(*keys)
 
         if mouse is not None:
-            dx = mouse['dx']
-            dy = mouse['dy']
+            dx = mouse.get('dx')
+            dy = mouse.get('dy')
 
-            if dx is None or dy is None:
-                print('Required: dx and dy')
-            else:
+            if dx is not None and dy is not None:
                 print(f'mouse: {dx}, {dy}')
                 pyautogui.move(dx, dy)
+
+            click = mouse.get('click')
+
+            if click == 'left':
+                print('left click')
+                pyautogui.leftClick()
+            elif click == 'right':
+                print('right click')
+                pyautogui.rightClick()
 
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
