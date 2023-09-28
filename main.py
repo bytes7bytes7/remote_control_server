@@ -37,6 +37,7 @@ class S(BaseHTTPRequestHandler):
 
         json_data = json.loads(post_data)
         keys = json_data['keys']
+        mouse = json_data['mouse']
 
         if keys is not None:
             if len(keys) == 0:
@@ -44,6 +45,16 @@ class S(BaseHTTPRequestHandler):
             else:
                 print(f'keys: {keys}')
                 pyautogui.hotkey(*keys)
+
+        if mouse is not None:
+            dx = mouse['dx']
+            dy = mouse['dy']
+
+            if dx is None or dy is None:
+                print('Required: dx and dy')
+            else:
+                print(f'mouse: {dx}, {dy}')
+                pyautogui.move(dx, dy)
 
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
